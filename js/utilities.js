@@ -14,6 +14,6 @@ function isPosEqual(pos1, pos2) {
 }
 
 // Function that gets a color TeamColor value and returns the oppisite TeamColor (WHITE -> BLACK and vice-versa).
-function opponentColor(color) {
-  return color === Team.White ? Team.Black : Team.White;
+function opponentColor(team) {
+  return team === Team.White ? Team.Black : Team.White;
 }

@@ -52,11 +52,19 @@ class BoardData {
     }
   }
 
-  createPiece(color, pos, rank = 'man') {
-    let piece = new Piece(color, pos, rank);
+  createPiece(team, pos, rank = 'man') {
+    let piece = new Piece(team, pos, rank);
     this.board[pos.y][pos.x] = piece;
-    color === Team.White ? this.wPieces.push(piece) : this.bPieces.push(piece);
+    team === Team.White ? this.wPieces.push(piece) : this.bPieces.push(piece);
     piece.draw();
     return piece;
+  }
+
+  getSquareState(pos, team) {
+    if (pos.x > this.boardSize - 1 || pos.x < 0 || pos.y > this.boardSize - 1 || pos.y < 0) {
+      return SquareState.OUT;
+    }
+    let square = this.board[pos.y][pos.x];
+    return square !== SquareState.EMPTY ? square.team == team ? SquareState.FRIENDLY : SquareState.ENEMY : SquareState.EMPTY;
   }
 }

@@ -6,27 +6,28 @@ class GameManager {
 
     this.prevSquare;
     this.prevValidMoves;
+    this.turn = Team.White;
   }
 
   selectSquare(e) {
     let currentPos = squareToPos(e);
-    let isValidMove = false;
+    let isValidMove;
     if (this.prevSquare) {
       this.prevSquare.classList.remove('selected-square');
     }
 
     if (this.prevValidMoves) {
       for (let i = 0; i < this.prevValidMoves.length; i++) {
-        this.prevValidMoves[i].classList.remove('valid-move-square');
-        isValidMove = (isPosEqual(squareToPos(this.prevValidMoves[i]), currentPos)) || isValidMove;
+        posToSqaure(this.prevValidMoves[i].destination).classList.remove('valid-move-square');
+        // isValidMove = (isPosEqual(squareToPos(this.prevValidMoves[i].destination), currentPos)) || isValidMove;
       }
     }
 
     if (isValidMove) {
-      // let piecePos = squareToPos(this.prevSquare);
-      // this.boardData.board[piecePos.y][piecePos.x].moveTo(currentPos, false);
-      // this.prevSquare = undefined;
-      // this.prevValidMoves = undefined;
+      let piecePos = squareToPos(this.prevSquare);
+      this.boardData.board[piecePos.y][piecePos.x].makeMove(currentPos);
+      this.prevSquare = undefined;
+      this.prevValidMoves = undefined;
     } else {
       e.classList.add('selected-square');
       this.prevSquare = e;
@@ -34,13 +35,17 @@ class GameManager {
       let piece = this.boardData.board[currentPos.y][currentPos.x];
       let validMoves;
 
-      piece && piece.color === this.turn ? validMoves = piece.validMoves() : validMoves = [];
+      piece && piece.team === this.turn ? validMoves = piece.possibleMoves() : validMoves = [];
 
       for (let i = 0; i < validMoves.length; i++) {
-        validMoves[i].classList.add('valid-move-square');
+        posToSqaure(validMoves[i].destination).classList.add('valid-move-square');
       }
 
       this.prevValidMoves = validMoves;
     }
+  }
+
+  getSquareState(pos) {
+
   }
 }
