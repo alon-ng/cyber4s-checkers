@@ -1,0 +1,81 @@
+@import url('https://fonts.googleapis.com/css?family=Comfortaa&display=swap');
+
+:root {
+  --off-white: rgb(230, 230, 230);
+  --off-black: rgb(30, 30, 30);
+  --selected-color: rgb(39, 113, 186);
+  --valid-color: rgb(53, 126, 26);
+  --square-size: 70px;
+  font-family: 'Comfortaa-Bold';
+}
+
+.white-square {
+  background-color: var(--off-white);
+  width: var(--square-size);
+  height: var(--square-size);
+  margin: 0px;
+  padding: 0px;
+  overflow: hidden;
+  user-select: none;
+}
+
+.black-square {
+  background-color: var(--off-black);
+  width: var(--square-size);
+  height: var(--square-size);
+  overflow: hidden;
+  margin: 0px;
+  padding: 0px;
+  user-select: none;
+}
+
+.turn-indicator-w {
+  margin: 30px auto;
+  width: 300px;
+  height: 100px;
+  outline: 1px solid rgb(255, 255, 255);
+  box-shadow: 0px 0px 5px 5px var(--off-black) inset;
+  background-color: var(--off-white);
+  border: 1px solid var(--off-black);
+
+  display: flex;
+  color: var(--off-black);
+  font-weight: bold;
+  font-size: 30px;
+  align-items: center;
+  justify-content: center;
+}
+
+.turn-indicator-b {
+  margin: 30px auto;
+  width: 300px;
+  height: 100px;
+  outline: 1px solid rgb(255, 255, 255);
+  box-shadow: 0px 0px 5px 5px var(--off-white) inset;
+  background-color: var(--off-black);
+  border: 1px solid var(--off-black);
+
+  display: flex;
+  color: var(--off-white);
+  font-weight: bold;
+  font-size: 30px;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkers-outer-container {
+  display: flex;
+  justify-content: center;
+}
+
+.checkers-inner-container {
+  text-align: center;
+}
+
+.checkers-div {
+}
+
+.checkers-div h1 {
+  margin: 0;
+  padding: 0;
+}
