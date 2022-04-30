@@ -46,7 +46,7 @@ class BoardData {
         this.board[y][x] = SquareState.EMPTY;
         if ((x + y) % 2 === 1) {
           y <= 2 ? this.createPiece(Team.White, { x: x, y: y }) : '';
-          y >= 6 ? this.createPiece(Team.Black, { x: x, y: y }) : '';
+          y >= 5 ? this.createPiece(Team.Black, { x: x, y: y }) : '';
         }
       }
     }

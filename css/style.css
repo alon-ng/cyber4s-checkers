@@ -82,3 +82,22 @@
   height: 60px;
   width: auto;
 }
+
+.selected-square {
+  background-color: var(--selected-color);
+}
+
+.valid-move-square {
+  background-color: var(--valid-color);
+}
+
+.selected-square > img {
+  -webkit-filter: drop-shadow(1px 1px 0 white)
+                drop-shadow(-1px 1px 0 white)
+                drop-shadow(1px -1px 0 white)
+                drop-shadow(-1px -1px 0 white);
+filter: drop-shadow(1px 1px 0 white)
+        drop-shadow(-1px 1px 0 white)
+        drop-shadow(1px -1px 0 white)
+        drop-shadow(-1px -1px 0 white);
+}
