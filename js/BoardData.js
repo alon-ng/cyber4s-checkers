@@ -74,11 +74,11 @@ class BoardData {
     pieceImgElement.src = '';
   }
 
-  capturePiece(piece) {
+  eatPiece(piece) {
     let pos = piece.pos;
     if (piece) {
-      piece.color === TeamColor.WHITE ? this.wPieces.splice(this.wPieces.indexOf(piece), 1) : this.bPieces.splice(this.bPieces.indexOf(piece), 1);
+      piece.team === Team.WHITE ? this.wPieces.splice(this.wPieces.indexOf(piece), 1) : this.bPieces.splice(this.bPieces.indexOf(piece), 1);
     }
-    clearSquare(pos);
+    this.clearSquare(pos);
   }
 }

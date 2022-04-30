@@ -6,7 +6,7 @@ class GameManager {
 
     this.prevSquare;
     this.prevPossibleMoves;
-    this.turn = Team.Black;
+    this.turn = Team.White;
   }
 
   selectSquare(e) {
