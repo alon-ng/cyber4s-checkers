@@ -67,4 +67,18 @@ class BoardData {
     let square = this.board[pos.y][pos.x];
     return square !== SquareState.EMPTY ? square.team == team ? SquareState.FRIENDLY : SquareState.ENEMY : SquareState.EMPTY;
   }
+
+  clearSquare(pos) {
+    let pieceImgElement = posToSqaure(pos).getElementsByTagName('img')[0];
+    this.board[pos.y][pos.x] = SquareState.EMPTY;
+    pieceImgElement.src = '';
+  }
+
+  capturePiece(piece) {
+    let pos = piece.pos;
+    if (piece) {
+      piece.color === TeamColor.WHITE ? this.wPieces.splice(this.wPieces.indexOf(piece), 1) : this.bPieces.splice(this.bPieces.indexOf(piece), 1);
+    }
+    clearSquare(pos);
+  }
 }

@@ -5,47 +5,50 @@ class GameManager {
     this.boardData.initializePieces();
 
     this.prevSquare;
-    this.prevValidMoves;
-    this.turn = Team.White;
+    this.prevPossibleMoves;
+    this.turn = Team.Black;
   }
 
   selectSquare(e) {
     let currentPos = squareToPos(e);
-    let isValidMove;
+    let move;
     if (this.prevSquare) {
       this.prevSquare.classList.remove('selected-square');
     }
 
-    if (this.prevValidMoves) {
-      for (let i = 0; i < this.prevValidMoves.length; i++) {
-        posToSqaure(this.prevValidMoves[i].destination).classList.remove('valid-move-square');
-        // isValidMove = (isPosEqual(squareToPos(this.prevValidMoves[i].destination), currentPos)) || isValidMove;
+    if (this.prevPossibleMoves) {
+      for (let prevPosMove of this.prevPossibleMoves) {
+        posToSqaure(prevPosMove.destination).classList.remove('valid-move-square');
+        move = isPosEqual(prevPosMove.destination, currentPos) ? prevPosMove : move;
       }
     }
 
-    if (isValidMove) {
+    if (move) {
       let piecePos = squareToPos(this.prevSquare);
-      this.boardData.board[piecePos.y][piecePos.x].makeMove(currentPos);
+      this.boardData.board[piecePos.y][piecePos.x].makeMove(move);
       this.prevSquare = undefined;
-      this.prevValidMoves = undefined;
+      this.prevPossibleMoves = undefined;
     } else {
       e.classList.add('selected-square');
       this.prevSquare = e;
 
       let piece = this.boardData.board[currentPos.y][currentPos.x];
-      let validMoves;
+      let possibleMoves;
 
-      piece && piece.team === this.turn ? validMoves = piece.possibleMoves() : validMoves = [];
+      piece && piece.team === this.turn ? possibleMoves = piece.possibleMoves() : possibleMoves = [];
 
-      for (let i = 0; i < validMoves.length; i++) {
-        posToSqaure(validMoves[i].destination).classList.add('valid-move-square');
+      for (let i = 0; i < possibleMoves.length; i++) {
+        posToSqaure(possibleMoves[i].destination).classList.add('valid-move-square');
       }
 
-      this.prevValidMoves = validMoves;
+      this.prevPossibleMoves = possibleMoves;
     }
   }
 
-  getSquareState(pos) {
-
+  changeTurn() {
+    let indicator = document.getElementById('turn-indicator');
+    this.turn === Team.White ? indicator.classList.add('turn-indicator-b') : indicator.classList.remove('turn-indicator-b');
+    this.turn === Team.White ? indicator.innerHTML = 'Black Turn' : indicator.innerHTML = 'White Turn';
+    this.turn = this.turn === Team.White ? Team.Black : Team.White;
   }
 }
