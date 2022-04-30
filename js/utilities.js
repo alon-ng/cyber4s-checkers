@@ -1,0 +1,19 @@
+// Function that takes a pos object { x: , y: } and returns the <td> element in that position.
+function posToSqaure(pos) {
+  return document.getElementById(`pos${pos.x}-${pos.y}`);
+}
+
+// Function that takes a <td> element and returns the position of it as a pos object { x: , y: }.
+function squareToPos(square) {
+  return { x: parseInt(square.id[3]), y: parseInt(square.id[5])};
+}
+
+// Function that gets two position objects { x: , y: } and returns weather they are equal.
+function isPosEqual(pos1, pos2) {
+  return pos1.x === pos2.x && pos1.y === pos2.y;
+}
+
+// Function that gets a color TeamColor value and returns the oppisite TeamColor (WHITE -> BLACK and vice-versa).
+function opponentColor(color) {
+  return color === Team.White ? Team.Black : Team.White;
+}

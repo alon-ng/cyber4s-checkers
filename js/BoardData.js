@@ -2,6 +2,8 @@ class BoardData {
   constructor(boardSize) {
     this.boardSize = boardSize;
     this.board = [];
+    this.wPieces = [];
+    this.bPieces = [];
   }
 
   createBoard() {
@@ -31,6 +33,30 @@ class BoardData {
       }
       table.appendChild(row);
     }
-    this.resetBoard();
+  }
+
+  initializePieces() {
+    this.wPieces = [];
+    this.bPieces = [];
+    this.board = new Array();
+
+    for (let y = 0; y < this.boardSize; y++) {
+      this.board[y] = new Array();
+      for (let x = 0; x < this.boardSize; x++) {
+        this.board[y][x] = SquareState.EMPTY;
+        if ((x + y) % 2 === 1) {
+          y <= 2 ? this.createPiece(Team.White, { x: x, y: y }) : '';
+          y >= 6 ? this.createPiece(Team.Black, { x: x, y: y }) : '';
+        }
+      }
+    }
+  }
+
+  createPiece(color, pos, rank = 'man') {
+    let piece = new Piece(color, pos, rank);
+    this.board[pos.y][pos.x] = piece;
+    color === Team.White ? this.wPieces.push(piece) : this.bPieces.push(piece);
+    piece.draw();
+    return piece;
   }
 }
