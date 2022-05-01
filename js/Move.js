@@ -1,7 +1,8 @@
 class Move {
-  constructor(origin, destination, victims = [], stopovers = []) {
+  constructor(origin, destination, victim, head) {
     this.origin = origin;
     this.destination = destination;
-    this.victims = victims;
+    this.victim = victim;
+    this.nextMove;
   }
 }

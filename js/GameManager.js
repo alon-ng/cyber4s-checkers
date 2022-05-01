@@ -18,8 +18,13 @@ class GameManager {
 
     if (this.prevPossibleMoves) {
       for (let prevPosMove of this.prevPossibleMoves) {
-        posToSqaure(prevPosMove.destination).classList.remove('valid-move-square');
-        move = isPosEqual(prevPosMove.destination, currentPos) ? prevPosMove : move;
+        let prevPosMoveCopy = prevPosMove;
+        while (prevPosMoveCopy.nextMove) {
+          posToSqaure(prevPosMoveCopy.destination).classList.remove('stopover-square');
+          prevPosMoveCopy = prevPosMoveCopy.nextMove;
+        }
+        posToSqaure(prevPosMoveCopy.destination).classList.remove('valid-move-square');
+        move = isPosEqual(prevPosMoveCopy.destination, currentPos) ? prevPosMove : move;
       }
     }
 
@@ -35,10 +40,14 @@ class GameManager {
       let piece = this.boardData.board[currentPos.y][currentPos.x];
       let possibleMoves;
 
-      piece && piece.team === this.turn ? possibleMoves = piece.possibleMoves() : possibleMoves = [];
-
-      for (let i = 0; i < possibleMoves.length; i++) {
-        posToSqaure(possibleMoves[i].destination).classList.add('valid-move-square');
+      piece ? possibleMoves = piece.possibleMoves() : possibleMoves = [];
+      
+      for (let possibleMove of possibleMoves) {
+        while (possibleMove.nextMove) {
+          posToSqaure(possibleMove.destination).classList.add('stopover-square');
+          possibleMove = possibleMove.nextMove;
+        }
+        posToSqaure(possibleMove.destination).classList.add('valid-move-square');
       }
 
       this.prevPossibleMoves = possibleMoves;

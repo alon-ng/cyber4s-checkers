@@ -5,6 +5,7 @@
   --off-black: rgb(30, 30, 30);
   --selected-color: rgb(39, 113, 186);
   --valid-color: rgb(53, 126, 26);
+  --stopover-color: rgb(180, 160, 50);
   --square-size: 70px;
   font-family: 'Comfortaa-Bold';
 }
@@ -89,6 +90,10 @@
 
 .valid-move-square {
   background-color: var(--valid-color);
+}
+
+.stopover-square {
+  background-color: var(--stopover-color);
 }
 
 .selected-square > img {

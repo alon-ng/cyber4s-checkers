@@ -14,7 +14,7 @@ class Piece {
   }
 
   possibleMoves() {
-    let possibleJumps = this.checkForPossbleJumps({...this.pos});
+    let possibleJumps = this.checkForPossbleJumps();
     if (possibleJumps.length > 0) {
       return possibleJumps;
     }
@@ -28,39 +28,52 @@ class Piece {
       if (squareState === SquareState.EMPTY) {
         let move = new Move({...this.pos}, potMove);
         possibleMoves.push(move);
-      } else if (squareState === SquareState.ENEMY) {
-
       }
     }
     return possibleMoves;
   }
 
-  checkForPossbleJumps(pos) {
+  checkForPossbleJumps(prevMove) {
+    let pos = prevMove ? prevMove.destination : this.pos;
     let possibleJumps = [];
     let potentialJumps = [
       [{ x: 1 + pos.x, y: this.direction + pos.y }, { x: 2 + pos.x, y: 2 * this.direction + pos.y }],
       [{ x: -1 + pos.x, y: this.direction + pos.y }, { x: -2 + pos.x, y: 2 * this.direction + pos.y }]
     ];
+
     for (let potentialJump of potentialJumps) {
       let squareStates = [gameManager.boardData.getSquareState(potentialJump[0], this.team), gameManager.boardData.getSquareState(potentialJump[1], this.team)];
       if (squareStates[0] === SquareState.ENEMY && squareStates[1] === SquareState.EMPTY) {
         let victim = gameManager.boardData.board[potentialJump[0].y][potentialJump[0].x];
-        possibleJumps.push(new Move(this.pos, potentialJump[1], [victim]));
+        let nextMove = new Move(pos, potentialJump[1], victim);
+        nextMove = this.checkForPossbleJumps(nextMove);
+        possibleJumps = possibleJumps.concat(nextMove);
+        for (let i = 0; i < possibleJumps.length && prevMove; i++) {
+          let temp = {...prevMove}
+          temp.nextMove = possibleJumps[i];
+          possibleJumps[i] = temp;
+        }
       }
     }
+
+    if (possibleJumps.length === 0 && prevMove) {
+      return [prevMove];
+    }
+
     return possibleJumps;
   }
 
   makeMove(move) {
-    for (let victim of move.victims) {
-      gameManager.boardData.eatPiece(victim);
+    while (move) {
+      move.victim ? gameManager.boardData.eatPiece(move.victim) : '';
+      let dest = move.destination;
+      gameManager.boardData.board[dest.y][dest.x] = this;
+      gameManager.boardData.clearSquare(this.pos);
+      this.pos = dest;
+      this.draw();
+      gameManager.changeTurn();
+      move = move.nextMove;
     }
-    let dest = move.destination;
-    gameManager.boardData.board[dest.y][dest.x] = this;
-    gameManager.boardData.clearSquare(this.pos);
-    this.pos = dest;
-    this.draw();
-    gameManager.changeTurn();
   }
 
   unmakeMove(move) {
