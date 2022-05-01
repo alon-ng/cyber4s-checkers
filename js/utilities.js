@@ -17,3 +17,15 @@ function isPosEqual(pos1, pos2) {
 function opponentColor(team) {
   return team === Team.White ? Team.Black : Team.White;
 }
+
+function reverseMoves(head) {
+  let prev, next;
+  let current = head;
+  while (current) {
+    next = current.nextMove;
+    current.nextMove = prev;
+    prev = current;
+    current = next;
+  }
+  return prev;
+}

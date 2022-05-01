@@ -12,8 +12,6 @@ class GameManager {
   }
 
   selectSquare(e) {
-    console.log(this.boardData.wPieces);
-    console.log(this.boardData.bPieces);
     let currentPos = squareToPos(e);
     let move;
     if (this.prevSquare) {
@@ -43,8 +41,7 @@ class GameManager {
       let piece = this.boardData.board[currentPos.y][currentPos.x];
       let possibleMoves = [];
 
-      if (piece && piece.team === this.turn) {
-        // possibleMoves = this.checkForPossibleTeamJumps(piece.team) ?
+      if (piece && true) {
         if (this.checkForPossibleTeamJumps(piece.team)) {
           possibleMoves = piece.checkForPossbleJumps();
         } else {

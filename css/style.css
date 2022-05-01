@@ -82,6 +82,7 @@
   padding: 5px;
   height: 60px;
   width: auto;
+  float: left;
 }
 
 .selected-square {

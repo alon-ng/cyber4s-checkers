@@ -17,6 +17,7 @@ class Piece {
   possibleMoves() {
     let potentialMoves = [];
     let possibleMoves = [];
+
     if (this.rank === 'man') {
       potentialMoves = [
         { x: 1 + this.pos.x, y: this.direction + this.pos.y },
@@ -78,16 +79,18 @@ class Piece {
 
     for (let potentialJump of potentialJumps) {
       let squareStates = [gameManager.boardData.getSquareState(potentialJump[0], this.team), gameManager.boardData.getSquareState(potentialJump[1], this.team)];
-      let victim = gameManager.boardData.board[potentialJump[0].y][potentialJump[0].x];
-      if (squareStates[0] === SquareState.ENEMY && squareStates[1] === SquareState.EMPTY && this.currentVictims.indexOf(victim) === -1) {
-        this.currentVictims.push(victim);
-        let nextMove = new Move(pos, potentialJump[1], victim);
-        nextMove = this.checkForPossbleJumps(nextMove);
-        possibleJumps = possibleJumps.concat(nextMove);
-        for (let i = 0; i < possibleJumps.length && prevMove; i++) {
-          let temp = {...prevMove}
-          temp.nextMove = possibleJumps[i];
-          possibleJumps[i] = temp;
+      if (squareStates[0] === SquareState.ENEMY && squareStates[1] === SquareState.EMPTY) {
+        let victim = gameManager.boardData.board[potentialJump[0].y][potentialJump[0].x];
+        if (this.currentVictims.indexOf(victim) === -1) {
+          this.currentVictims.push(victim);
+          let nextMove = new Move(pos, potentialJump[1], victim);
+          nextMove = this.checkForPossbleJumps(nextMove);
+          possibleJumps = possibleJumps.concat(nextMove);
+          for (let i = 0; i < possibleJumps.length && prevMove; i++) {
+            let temp = {...prevMove}
+            temp.nextMove = possibleJumps[i];
+            possibleJumps[i] = temp;
+          }
         }
       }
     }
@@ -114,16 +117,29 @@ class Piece {
   }
 
   unmakeMove(move) {
-    for (let victim of move.victims) {
-      gameManager.boardData.board[victim.pos.y][victim.pos.x] = victim;
-      victim.draw();
+    let rMoves = reverseMoves(move);
+    while (rMoves) {
+      rMoves.victim ? rMoves.victim.team === Team.White ? gameManager.boardData.wPieces.push(rMoves.victim) : gameManager.boardData.bPieces.push(rMoves.victim) : '';
+      gameManager.boardData.board[rMoves.victim.pos.y][rMoves.victim.pos.x] = rMoves.victim;
+      rMoves.victim.draw();
+      let dest = rMoves.origin;
+      gameManager.boardData.board[dest.y][dest.x] = this;
+      gameManager.boardData.clearSquare(this.pos);
+      this.pos = dest;
+      rMoves = rMoves.nextMove;
     }
+    this.checkForPromotion(true);
     gameManager.changeTurn();
   }
 
-  checkForPromotion() {
-    (this.team === Team.White && this.pos.y === gameManager.boardData.boardSize - 1) ? this.rank = 'king' : '';
-    (this.team === Team.Black && this.pos.y === 0) ? this.rank = 'king' : '';
+  checkForPromotion(isReverse = false) {
+    if (!isReverse) {
+      (this.team === Team.White && this.pos.y === gameManager.boardData.boardSize - 1) ? this.rank = 'king' : '';
+      (this.team === Team.Black && this.pos.y === 0) ? this.rank = 'king' : '';
+    } else {
+      (this.team === Team.White && this.pos.y === gameManager.boardData.boardSize - 1) ? this.rank = 'man' : '';
+      (this.team === Team.Black && this.pos.y === 0) ? this.rank = 'man' : '';
+    }
     this.draw();
   }
 }

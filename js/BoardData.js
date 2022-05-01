@@ -10,8 +10,6 @@ class BoardData {
     let table = document.createElement('table');
     document.getElementsByClassName('checkers-div')[0].appendChild(table);
 
-    let r = document.createElement('tr');
-    table.appendChild(r);
     for (let y = 0; y < this.boardSize; y++) {
       let row = document.createElement('tr');
       for (let x = 0; x < this.boardSize; x++) {
@@ -45,11 +43,15 @@ class BoardData {
       for (let x = 0; x < this.boardSize; x++) {
         this.board[y][x] = SquareState.EMPTY;
         if ((x + y) % 2 === 1) {
-          y <= 2 ? this.createPiece(Team.White, { x: x, y: y }) : '';
-          y >= 5 ? this.createPiece(Team.Black, { x: x, y: y }) : '';
+          // y <= 2 ? this.createPiece(Team.White, { x: x, y: y }) : '';
+          // y >= 5 ? this.createPiece(Team.Black, { x: x, y: y }) : '';
         }
       }
     }
+    this.createPiece(Team.White, { x: 6, y: 1 }, 'king')
+    this.createPiece(Team.Black, { x: 5, y: 2 })
+    this.createPiece(Team.Black, { x: 3, y: 4 })
+    this.createPiece(Team.Black, { x: 1, y: 6 })
   }
 
   createPiece(team, pos, rank = 'man') {
@@ -77,7 +79,7 @@ class BoardData {
   eatPiece(piece) {
     let pos = piece.pos;
     if (piece) {
-      piece.team === Team.WHITE ? this.wPieces.splice(this.wPieces.indexOf(piece), 1) : this.bPieces.splice(this.bPieces.indexOf(piece), 1);
+      piece.team === Team.White ? this.wPieces.splice(this.wPieces.indexOf(piece), 1) : this.bPieces.splice(this.bPieces.indexOf(piece), 1);
     }
     this.clearSquare(pos);
   }
