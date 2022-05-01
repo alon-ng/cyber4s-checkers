@@ -18,11 +18,22 @@ class Piece {
     if (possibleJumps.length > 0) {
       return possibleJumps;
     }
+    let potentialMoves = [];
     let possibleMoves = [];
-    let potentialMoves = [
-      { x: 1 + this.pos.x, y: this.direction + this.pos.y },
-      { x: -1 + this.pos.x, y: this.direction + this.pos.y}
-    ];
+    if (this.rank === 'man') {
+      potentialMoves = [
+        { x: 1 + this.pos.x, y: this.direction + this.pos.y },
+        { x: -1 + this.pos.x, y: this.direction + this.pos.y}
+      ];
+    } else if (this.rank === 'king') {
+      for (let i = 1; i < gameManager.boardData.boardSize; i++) {
+        potentialMoves.push({ x: this.pos.x + 1 * i, y: this.pos.y + 1 * i });
+        potentialMoves.push({ x: this.pos.x + -1 * i, y: this.pos.y + 1 * i });
+        potentialMoves.push({ x: this.pos.x + 1 * i ,y: this.pos.y + -1 * i });
+        potentialMoves.push({ x: this.pos.x + -1 * i, y: this.pos.y + -1 * i });
+      }
+    }
+
     for (let potMove of potentialMoves) {
       let squareState = gameManager.boardData.getSquareState(potMove, this.team);
       if (squareState === SquareState.EMPTY) {
