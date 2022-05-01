@@ -64,16 +64,17 @@ class Piece {
   }
 
   makeMove(move) {
+    gameManager.changeTurn();
     while (move) {
       move.victim ? gameManager.boardData.eatPiece(move.victim) : '';
       let dest = move.destination;
       gameManager.boardData.board[dest.y][dest.x] = this;
       gameManager.boardData.clearSquare(this.pos);
       this.pos = dest;
-      this.draw();
-      gameManager.changeTurn();
       move = move.nextMove;
     }
+    this.checkForPromotion();
+    this.draw();
   }
 
   unmakeMove(move) {
@@ -82,5 +83,11 @@ class Piece {
       victim.draw();
     }
     gameManager.changeTurn();
+  }
+
+  checkForPromotion() {
+    (this.team === Team.White && this.pos.y === gameManager.boardData.boardSize - 1) ? this.rank = 'king' : '';
+    (this.team === Team.Black && this.pos.y === 0) ? this.rank = 'king' : '';
+    this.draw();
   }
 }

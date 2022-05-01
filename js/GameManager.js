@@ -4,6 +4,7 @@ class GameManager {
     this.boardData.createBoard();
     this.boardData.initializePieces();
 
+    this.counter = 0;
     this.prevSquare;
     this.prevPossibleMoves;
     this.turn = Team.White;
@@ -35,13 +36,20 @@ class GameManager {
       this.prevPossibleMoves = undefined;
     } else {
       e.classList.add('selected-square');
-      this.prevSquare = e;
 
       let piece = this.boardData.board[currentPos.y][currentPos.x];
       let possibleMoves;
 
-      piece ? possibleMoves = piece.possibleMoves() : possibleMoves = [];
-      
+      this.turn = piece.team;
+      possibleMoves = (piece && piece.team === this.turn) ? piece.possibleMoves() : [];
+      if (e === this.prevSquare) {
+        let possibleMovesLength = possibleMoves.length;
+        possibleMoves = possibleMoves.slice(this.counter, this.counter + 1);
+        this.counter = (this.counter + 1) % (possibleMovesLength);
+      } else {
+        this.counter = 0;
+      }
+
       for (let possibleMove of possibleMoves) {
         while (possibleMove.nextMove) {
           posToSqaure(possibleMove.destination).classList.add('stopover-square');
@@ -50,6 +58,7 @@ class GameManager {
         posToSqaure(possibleMove.destination).classList.add('valid-move-square');
       }
 
+      this.prevSquare = e;
       this.prevPossibleMoves = possibleMoves;
     }
   }
