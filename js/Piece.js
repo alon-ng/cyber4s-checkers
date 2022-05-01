@@ -15,10 +15,6 @@ class Piece {
   }
 
   possibleMoves() {
-    let possibleJumps = this.checkForPossbleJumps();
-    if (possibleJumps.length > 0) {
-      return possibleJumps;
-    }
     let potentialMoves = [];
     let possibleMoves = [];
     if (this.rank === 'man') {
