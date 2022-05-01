@@ -4,6 +4,7 @@ class Piece {
     this.pos = pos;
     this.rank = rank;
     this.direction = this.team === Team.White ? 1 : -1;
+    this.currentVictims = [];
   }
 
   draw() {
@@ -25,37 +26,65 @@ class Piece {
         { x: 1 + this.pos.x, y: this.direction + this.pos.y },
         { x: -1 + this.pos.x, y: this.direction + this.pos.y}
       ];
+      for (let potMove of potentialMoves) {
+        let squareState = gameManager.boardData.getSquareState(potMove, this.team);
+        if (squareState === SquareState.EMPTY) {
+          let move = new Move({...this.pos}, potMove);
+          possibleMoves.push(move);
+        }
+      }
     } else if (this.rank === 'king') {
-      for (let i = 1; i < gameManager.boardData.boardSize; i++) {
-        potentialMoves.push({ x: this.pos.x + 1 * i, y: this.pos.y + 1 * i });
-        potentialMoves.push({ x: this.pos.x + -1 * i, y: this.pos.y + 1 * i });
-        potentialMoves.push({ x: this.pos.x + 1 * i ,y: this.pos.y + -1 * i });
-        potentialMoves.push({ x: this.pos.x + -1 * i, y: this.pos.y + -1 * i });
+      let offsets = [ { x: 1, y: 1 }, { x: 1, y: -1 }, { x: -1, y: 1 }, { x: -1, y: -1 }];
+      for (const offset of offsets) {
+        let checkingPos = { x: this.pos.x + offset.x, y: this.pos.y + offset.y};
+        for (let i = 1; i < gameManager.boardData.boardSize; i++) {
+          let sqrState = gameManager.boardData.getSquareState(checkingPos, this.team);
+          if (sqrState === SquareState.EMPTY) {
+            possibleMoves.push(new Move({...this.pos}, {...checkingPos}));
+          } else {
+            break;
+          }
+          checkingPos.x += offset.x;
+          checkingPos.y += offset.y;
+        }
       }
     }
 
-    for (let potMove of potentialMoves) {
-      let squareState = gameManager.boardData.getSquareState(potMove, this.team);
-      if (squareState === SquareState.EMPTY) {
-        let move = new Move({...this.pos}, potMove);
-        possibleMoves.push(move);
-      }
-    }
     return possibleMoves;
   }
 
   checkForPossbleJumps(prevMove) {
     let pos = prevMove ? prevMove.destination : this.pos;
     let possibleJumps = [];
-    let potentialJumps = [
-      [{ x: 1 + pos.x, y: this.direction + pos.y }, { x: 2 + pos.x, y: 2 * this.direction + pos.y }],
-      [{ x: -1 + pos.x, y: this.direction + pos.y }, { x: -2 + pos.x, y: 2 * this.direction + pos.y }]
-    ];
+    let potentialJumps = [];
+    if (this.rank === 'man') {
+      potentialJumps = [
+        [{ x: 1 + pos.x, y: this.direction + pos.y }, { x: 2 + pos.x, y: 2 * this.direction + pos.y }],
+        [{ x: -1 + pos.x, y: this.direction + pos.y }, { x: -2 + pos.x, y: 2 * this.direction + pos.y }]
+      ];
+    } else if (this.rank === 'king') {
+      let offsets = [ { x: 1, y: 1 }, { x: 1, y: -1 }, { x: -1, y: 1 }, { x: -1, y: -1 }];
+      for (const offset of offsets) {
+        let checkingPos = { x: pos.x + offset.x, y: pos.y + offset.y};
+        for (let i = 1; i < gameManager.boardData.boardSize; i++) {
+          let sqrState = gameManager.boardData.getSquareState(checkingPos, this.team);
+          if (sqrState === SquareState.ENEMY) {
+            potentialJumps.push([{...checkingPos}, { x: checkingPos.x + offset.x, y: checkingPos.y + offset.y }]);
+            break;
+          } else if (sqrState !== SquareState.EMPTY) {
+            break;
+          }
+          checkingPos.x += offset.x;
+          checkingPos.y += offset.y;
+        }
+      }
+    }
 
     for (let potentialJump of potentialJumps) {
       let squareStates = [gameManager.boardData.getSquareState(potentialJump[0], this.team), gameManager.boardData.getSquareState(potentialJump[1], this.team)];
-      if (squareStates[0] === SquareState.ENEMY && squareStates[1] === SquareState.EMPTY) {
-        let victim = gameManager.boardData.board[potentialJump[0].y][potentialJump[0].x];
+      let victim = gameManager.boardData.board[potentialJump[0].y][potentialJump[0].x];
+      if (squareStates[0] === SquareState.ENEMY && squareStates[1] === SquareState.EMPTY && this.currentVictims.indexOf(victim) === -1) {
+        this.currentVictims.push(victim);
         let nextMove = new Move(pos, potentialJump[1], victim);
         nextMove = this.checkForPossbleJumps(nextMove);
         possibleJumps = possibleJumps.concat(nextMove);
@@ -70,7 +99,7 @@ class Piece {
     if (possibleJumps.length === 0 && prevMove) {
       return [prevMove];
     }
-
+    this.currentVictims = prevMove ? this.currentVictims : [];
     return possibleJumps;
   }
 
