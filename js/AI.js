@@ -1,15 +1,16 @@
 const Value = {
   'man': 100,
-  'king': 900
+  'king': 500,
+  dFromOrigin: 10
 }
 
 function evaluate() {
   let eval = 0;
   for (const piece of gameManager.boardData.wPieces) {
-    eval += Value[piece.rank];
+    eval += evaluatePiece(piece);
   }
   for (const piece of gameManager.boardData.bPieces) {
-    eval -= Value[piece.rank];
+    eval -= evaluatePiece(piece);
   }
   if (gameManager.turn === Team.Black) {
     return -eval;
@@ -17,6 +18,17 @@ function evaluate() {
   return eval;
 }
 
+function evaluatePiece(piece) {
+  let value = Value[piece.rank];
+  let dFromOrigin = piece.team === Team.White ? piece.pos.y : BOARD_SIZE - 1 - piece.pos.y;
+  dFromOrigin = dFromOrigin === 0 ? 10 : dFromOrigin;
+  value += dFromOrigin * Value.dFromOrigin;
+  let piecesCount = gameManager.boardData.piecesCount();
+
+  return (10 * value / piecesCount);
+}
+
+let bestMove;
 function search(depth, alpha = -Infinity, beta = Infinity) {
   if (gameManager.gameEnded) {
     if (gameManager.winner === gameManager.turn) {
@@ -33,10 +45,10 @@ function search(depth, alpha = -Infinity, beta = Infinity) {
   let bestEval = -Infinity;
 
   for (const move of moves) {
-    move.piece.makeMove(move);
+    move.piece.makeMove(move, false);
     let eval = -search(depth - 1, -beta, -alpha);
     bestEval = Math.max(eval, bestEval);
-    move.piece.unmakeMove(move);
+    move.piece.unmakeMove(move, false);
     if (eval >= beta) {
       return beta;
     }

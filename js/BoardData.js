@@ -43,8 +43,8 @@ class BoardData {
       for (let x = 0; x < this.boardSize; x++) {
         this.board[y][x] = SquareState.EMPTY;
         if ((x + y) % 2 === 1) {
-          y <= 2 && x % 2 === 0 ? this.createPiece(Team.White, { x: x, y: y }) : '';
-          y >= 5 && x % 2 === 0 ? this.createPiece(Team.Black, { x: x, y: y }) : '';
+          y <= 2 ? this.createPiece(Team.White, { x: x, y: y }) : '';
+          y >= 5 ? this.createPiece(Team.Black, { x: x, y: y }) : '';
         }
       }
     }
@@ -68,21 +68,27 @@ class BoardData {
     return square !== SquareState.EMPTY ? square.team == team ? SquareState.FRIENDLY : SquareState.ENEMY : SquareState.EMPTY;
   }
 
-  clearSquare(pos) {
-    let pieceImgElement = posToSqaure(pos).getElementsByTagName('img')[0];
+  clearSquare(pos, toDraw = true) {
     this.board[pos.y][pos.x] = SquareState.EMPTY;
-    pieceImgElement.src = '';
+    if (toDraw) {
+      let pieceImgElement = posToSqaure(pos).getElementsByTagName('img')[0];
+      pieceImgElement.src = '';
+    }
   }
 
-  eatPiece(piece) {
+  eatPiece(piece, toDraw = true) {
     if (piece) {
       let pieces = this.getPieces(piece.team);
       pieces.splice(pieces.indexOf(piece), 1);
     }
-    this.clearSquare(piece.pos);
+    this.clearSquare(piece.pos, toDraw);
   }
 
   getPieces(team) {
     return team === Team.White ? this.wPieces : this.bPieces;
+  }
+
+  piecesCount() {
+    return this.wPieces.length + this.bPieces.length;
   }
 }

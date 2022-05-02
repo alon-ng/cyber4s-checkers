@@ -110,40 +110,40 @@ class Piece {
     return possibleJumps;
   }
 
-  makeMove(move) {
-    gameManager.changeTurn();
+  makeMove(move, toDraw = true) {
+    gameManager.changeTurn(toDraw);
     while (move) {
-      move.victim ? gameManager.boardData.eatPiece(move.victim) : '';
+      move.victim ? gameManager.boardData.eatPiece(move.victim, toDraw) : '';
       let dest = move.destination;
       gameManager.boardData.board[dest.y][dest.x] = this;
-      gameManager.boardData.clearSquare(this.pos);
+      gameManager.boardData.clearSquare(this.pos, toDraw);
       this.pos = dest;
       move = move.nextMove;
     }
-    this.checkForPromotion();
-    this.draw();
+    this.checkForPromotion(false, toDraw);
+    toDraw ? this.draw() : '';
   }
 
-  unmakeMove(move) {
+  unmakeMove(move, toDraw = true) {
     let rMoves = reverseMoves(move);
-    this.checkForPromotion(true);
+    this.checkForPromotion(true, toDraw);
     while (rMoves) {
       if (rMoves.victim) {
         gameManager.boardData.getPieces(rMoves.victim.team).push(rMoves.victim);
         gameManager.boardData.board[rMoves.victim.pos.y][rMoves.victim.pos.x] = rMoves.victim;
-        rMoves.victim.draw();
+        toDraw ? rMoves.victim.draw() : '';
       }
       let dest = rMoves.origin;
       gameManager.boardData.board[dest.y][dest.x] = this;
-      gameManager.boardData.clearSquare(this.pos);
+      gameManager.boardData.clearSquare(this.pos, toDraw);
       this.pos = dest;
       rMoves = rMoves.nextMove;
     }
-    this.draw();
-    gameManager.changeTurn();
+    toDraw ? this.draw() : '';
+    gameManager.changeTurn(toDraw);
   }
 
-  checkForPromotion(isReverse = false) {
+  checkForPromotion(isReverse = false, toDraw = true) {
     if (!isReverse) {
       (this.team === Team.White && this.pos.y === gameManager.boardData.boardSize - 1) && this.rank === PieceRank.Man ? this.rank = PieceRank.King : '';
       (this.team === Team.Black && this.pos.y === 0) && this.rank === PieceRank.Man ? this.rank = PieceRank.King : '';
@@ -152,6 +152,6 @@ class Piece {
       (this.team === Team.Black && this.pos.y === 0) && this.movesSincePromotion === 0 ? this.rank = PieceRank.Man : '';
     }
     this.rank === PieceRank.King ? this.movesSincePromotion = 0: '';
-    this.draw();
+    toDraw ? this.draw() : '';
   }
 }

@@ -71,10 +71,12 @@ class GameManager {
     }
   }
 
-  changeTurn() {
-    let indicator = document.getElementById('turn-indicator');
-    this.turn === Team.White ? indicator.classList.add('turn-indicator-b') : indicator.classList.remove('turn-indicator-b');
-    this.turn === Team.White ? indicator.innerHTML = 'Black Turn' : indicator.innerHTML = 'White Turn';
+  changeTurn(toDraw = true) {
+    if (toDraw) {
+      let indicator = document.getElementById('turn-indicator');
+      this.turn === Team.White ? indicator.classList.add('turn-indicator-b') : indicator.classList.remove('turn-indicator-b');
+      this.turn === Team.White ? indicator.innerHTML = 'Black Turn' : indicator.innerHTML = 'White Turn';
+    }
     this.turn = this.turn === Team.White ? Team.Black : Team.White;
   }
 
