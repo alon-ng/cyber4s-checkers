@@ -29,3 +29,7 @@ function reverseMoves(head) {
   }
   return prev;
 }
+
+function opponentTeam(team) {
+  return team === Team.White ? Team.Black : Team.White;
+}

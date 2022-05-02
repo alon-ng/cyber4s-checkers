@@ -9,6 +9,7 @@ class GameManager {
     this.prevPossibleMoves;
     this.turn = Team.White;
     this.gameEnded = false;
+    this.winner;
   }
 
   selectSquare(e) {
@@ -33,6 +34,7 @@ class GameManager {
     if (move) {
       let piecePos = squareToPos(this.prevSquare);
       this.boardData.board[piecePos.y][piecePos.x].makeMove(move);
+      this.checkForWin();
       this.prevSquare = undefined;
       this.prevPossibleMoves = undefined;
     } else {
@@ -41,7 +43,7 @@ class GameManager {
       let piece = this.boardData.board[currentPos.y][currentPos.x];
       let possibleMoves = [];
 
-      if (piece && true) {
+      if (piece && piece.team === this.turn) {
         if (this.checkForPossibleTeamJumps(piece.team)) {
           possibleMoves = piece.checkForPossbleJumps();
         } else {
@@ -76,35 +78,38 @@ class GameManager {
     this.turn = this.turn === Team.White ? Team.Black : Team.White;
   }
 
-  checkForWin() {
-    let wPossibleMoves = []
-    for (const piece of this.boardData.wPieces) {
-      wPossibleMoves = wPossibleMoves.concat(piece.possibleMoves());
+  checkForWin(toNotify = true) {
+    let pieces = this.boardData.getPieces(this.turn);
+    let isOutOfMoves = true;
+    for (const piece of pieces) {
+      let possibleMoves = []
+      if (this.checkForPossibleTeamJumps(piece.team)) {
+        possibleMoves = piece.checkForPossbleJumps();
+      } else {
+        possibleMoves = piece.possibleMoves();
+      }
+      if (possibleMoves.length > 0) {
+        isOutOfMoves = false;
+        break;
+      }
     }
 
-    let bPossibleMoves = []
-    for (const piece of this.boardData.bPieces) {
-      bPossibleMoves = bPossibleMoves.concat(piece.possibleMoves());
-    }
+    this.winner = isOutOfMoves ? opponentTeam(this.turn) : undefined;
 
-    let win;
-    win = this.boardData.wPieces.length === 0 || wPossibleMoves.length === 0 ? Team.Black : win;
-    win = this.boardData.bPieces.length === 0 || bPossibleMoves.length === 0 ? Team.White : win;
-
-    if (win) {
+    if (this.winner && toNotify) {
       this.gameEnded = true;
       this.turn = false;
       let overlay = document.getElementsByClassName('popup-notification-overlay')[0];
       overlay.getElementsByTagName('h1')[0].innerHTML = "Good Game!";
-      overlay.getElementsByTagName('h2')[0].innerHTML = win.charAt(0).toUpperCase() + win.slice(1) + ' wins!';
+      overlay.getElementsByTagName('h2')[0].innerHTML = this.winner.charAt(0).toUpperCase() + this.winner.slice(1) + ' wins!';
       overlay.style.visibility = 'visible';
       overlay.style.opacity = '1';
   }
-    return win;
+    return this.winner;
   }
 
   checkForPossibleTeamJumps(team) {
-    let pieces = team === Team.White ? this.boardData.wPieces : this.boardData.bPieces;
+    let pieces = this.boardData.getPieces(team);
     for (const piece of pieces) {
       let posJumps = piece.checkForPossbleJumps();
       if (posJumps && posJumps.length > 0) {

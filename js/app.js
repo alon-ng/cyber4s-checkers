@@ -12,6 +12,11 @@ const SquareState = {
   OUT: 'out'
 }
 
+const PieceRank = {
+  King: 'king',
+  Man: 'man'
+}
+
 let gameManager;
 
 window.addEventListener('load', initialize);
