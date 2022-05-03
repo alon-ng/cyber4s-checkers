@@ -12,6 +12,7 @@ class GameManager {
     this.winner;
   }
 
+  // The main core of the game, A function which activates whenever a square is clicked.
   selectSquare(e) {
     let currentPos = squareToPos(e);
     let move;
@@ -69,8 +70,10 @@ class GameManager {
       this.prevSquare = e;
       this.prevPossibleMoves = possibleMoves;
     }
+    setTimeout(aiPlay, 500);
   }
 
+  // A function which changes the turn and update the indicator if needed.
   changeTurn(toDraw = true) {
     if (toDraw) {
       let indicator = document.getElementById('turn-indicator');
@@ -80,6 +83,7 @@ class GameManager {
     this.turn = this.turn === Team.White ? Team.Black : Team.White;
   }
 
+  // A function which checks if a player won and notify the user if needed.
   checkForWin(toNotify = true) {
     let pieces = this.boardData.getPieces(this.turn);
     let isOutOfMoves = true;
@@ -110,6 +114,7 @@ class GameManager {
     return this.winner;
   }
 
+  // A function which checks if there are possible jumps to a certein team. (returns a boolian).
   checkForPossibleTeamJumps(team) {
     let pieces = this.boardData.getPieces(team);
     for (const piece of pieces) {
@@ -119,5 +124,11 @@ class GameManager {
       }
     }
     return false;
+  }
+}
+
+function aiPlay() {
+  if (ai) {
+    ai.play();
   }
 }

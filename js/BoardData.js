@@ -6,8 +6,10 @@ class BoardData {
     this.bPieces = [];
   }
 
+  // A function which creates the board visually in HTML.
   createBoard() {
     let table = document.createElement('table');
+    table.id = 'checkers-board';
     document.getElementsByClassName('checkers-div')[0].appendChild(table);
 
     for (let y = 0; y < this.boardSize; y++) {
@@ -33,6 +35,7 @@ class BoardData {
     }
   }
 
+  // A function which initialize all the pieces in their respected position.
   initializePieces() {
     this.wPieces = [];
     this.bPieces = [];
@@ -44,14 +47,13 @@ class BoardData {
         this.board[y][x] = SquareState.EMPTY;
         if ((x + y) % 2 === 1) {
           y <= 2 ? this.createPiece(Team.White, { x: x, y: y }) : '';
-          y >= 5 ? this.createPiece(Team.Black, { x: x, y: y }) : '';
+          y >= this.boardSize - 3 ? this.createPiece(Team.Black, { x: x, y: y }) : '';
         }
       }
     }
   }
 
-
-
+  // A function which create a piece object and adds it to BoardData and draws it as well.
   createPiece(team, pos, rank = PieceRank.Man) {
     let piece = new Piece(team, pos, rank);
     this.board[pos.y][pos.x] = piece;
@@ -60,6 +62,7 @@ class BoardData {
     return piece;
   }
 
+  // A function which gets a position object and a team object and returns the state (empty, friendly, enemy or outofbound).
   getSquareState(pos, team) {
     if (pos.x > this.boardSize - 1 || pos.x < 0 || pos.y > this.boardSize - 1 || pos.y < 0) {
       return SquareState.OUT;
@@ -68,6 +71,7 @@ class BoardData {
     return square !== SquareState.EMPTY ? square.team == team ? SquareState.FRIENDLY : SquareState.ENEMY : SquareState.EMPTY;
   }
 
+  // A function which removes a piece from a certein position on the board.
   clearSquare(pos, toDraw = true) {
     this.board[pos.y][pos.x] = SquareState.EMPTY;
     if (toDraw) {
@@ -76,6 +80,7 @@ class BoardData {
     }
   }
 
+  // A function which removes a piece from a certein position on the board and from the pieces arrays.
   eatPiece(piece, toDraw = true) {
     if (piece) {
       let pieces = this.getPieces(piece.team);
@@ -84,10 +89,12 @@ class BoardData {
     this.clearSquare(piece.pos, toDraw);
   }
 
+  // A function which get a team type and returns all the pieces of that type.
   getPieces(team) {
     return team === Team.White ? this.wPieces : this.bPieces;
   }
 
+  // A function which returns the count of all the pieces on the board.
   piecesCount() {
     return this.wPieces.length + this.bPieces.length;
   }

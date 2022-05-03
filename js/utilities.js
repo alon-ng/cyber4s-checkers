@@ -13,11 +13,7 @@ function isPosEqual(pos1, pos2) {
   return pos1.x === pos2.x && pos1.y === pos2.y;
 }
 
-// Function that gets a color TeamColor value and returns the oppisite TeamColor (WHITE -> BLACK and vice-versa).
-function opponentColor(team) {
-  return team === Team.White ? Team.Black : Team.White;
-}
-
+// A function which takes a linked list of moves and reverse it.
 function reverseMoves(head) {
   let prev, next;
   let current = head;
@@ -30,6 +26,21 @@ function reverseMoves(head) {
   return prev;
 }
 
+// Function which get a team color and returns the other team color.
 function opponentTeam(team) {
   return team === Team.White ? Team.Black : Team.White;
+}
+
+// Work in progress
+function deepCopyMove(move) {
+  let copy = new Move(move.origin, move.destination, move.victim, undefined);
+  copy.head = copy;
+  copy.piece = move.piece;
+  while (move.nextMove) {
+    copy.piece = move.piece;
+    copy.nextMove = new Move(move.nextMove.origin, move.nextMove.destination, move.nextMove.victim, copy.head);
+    copy = copy.nextMove;
+    move = move.nextMove;
+  }
+  return copy.head;
 }

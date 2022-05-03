@@ -1,6 +1,7 @@
 # cyber4s-checkers
 
 ** in this document I'll refer to normal playing pieces as Men, and Kings **
+
 In this project I'm trying to create the checkers game with the following rules:
 1. Placement: each player will start with 3 rows of men on the black squares (12 in total).
 2. Man's Movement: Men can move only one square diagonally forward, they can jump over the opponent's pieces and capture them, In addition, they can jump multiple opponent's pieces in one turn as long as they are sequenced accordingly (they can capture backwards starting from the second capture). If one's pieces has a possible jump, the player must take it (The player can choose which jump to take as long as he have multiple choices).
@@ -10,4 +11,5 @@ In this project I'm trying to create the checkers game with the following rules:
 
 Special Features:
  - When a piece has more than one available move, the player can select the piece again and one move at the time will be shown (keep clicking to shuffle through the moves).
- - 
+ - When multiple jumping, a yellow square will be drawn in each stopover.
+ - An AI can be played against (Work in progress).

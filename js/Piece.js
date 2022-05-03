@@ -1,4 +1,6 @@
+// A piece class
 class Piece {
+  // Piece constructor which sets the default piece to a rank of 'man'.
   constructor(team, pos, rank = PieceRank.Man) {
     this.team = team;
     this.pos = pos;
@@ -7,6 +9,7 @@ class Piece {
     this.currentVictims = [];
   }
 
+  // A function which draws the piece to the board.
   draw() {
     let imgPath = `./img/${this.team}-${this.rank}.png`;
     let pieceImgElement = posToSqaure(this.pos).getElementsByTagName('img')[0];
@@ -14,6 +17,7 @@ class Piece {
     pieceImgElement.alt = '';
   }
 
+  // A function which returns all the piece possible moves (without the jumps).
   possibleMoves() {
     let potentialMoves = [];
     let possibleMoves = [];
@@ -53,6 +57,7 @@ class Piece {
     return possibleMoves;
   }
 
+  // A recusive function which returns the piece possible jumps.
   checkForPossbleJumps(prevMove) {
     let pos = prevMove ? prevMove.destination : this.pos;
     let possibleJumps = [];
@@ -110,6 +115,7 @@ class Piece {
     return possibleJumps;
   }
 
+  // A function which takes a move object and make the move.
   makeMove(move, toDraw = true) {
     gameManager.changeTurn(toDraw);
     while (move) {
@@ -121,11 +127,14 @@ class Piece {
       move = move.nextMove;
     }
     this.checkForPromotion(false, toDraw);
+    this.movesSincePromotion++;
     toDraw ? this.draw() : '';
   }
 
+  // A function which takes a move object and unmake the move.
   unmakeMove(move, toDraw = true) {
     let rMoves = reverseMoves(move);
+    this.movesSincePromotion--;
     this.checkForPromotion(true, toDraw);
     while (rMoves) {
       if (rMoves.victim) {
@@ -143,15 +152,25 @@ class Piece {
     gameManager.changeTurn(toDraw);
   }
 
+  // A function which checks if a piece need to be promoted to a king, and does so if the right conditions met.
   checkForPromotion(isReverse = false, toDraw = true) {
     if (!isReverse) {
-      (this.team === Team.White && this.pos.y === gameManager.boardData.boardSize - 1) && this.rank === PieceRank.Man ? this.rank = PieceRank.King : '';
-      (this.team === Team.Black && this.pos.y === 0) && this.rank === PieceRank.Man ? this.rank = PieceRank.King : '';
+      if ((this.rank === PieceRank.Man && this.team === Team.White && this.pos.y === gameManager.boardData.boardSize - 1) && this.rank === PieceRank.Man) {
+        this.rank = PieceRank.King
+        this.movesSincePromotion = 0;
+      }
+      if ((this.rank === PieceRank.Man && this.team === Team.Black && this.pos.y === 0) && this.rank === PieceRank.Man) {
+        this.rank = PieceRank.King
+        this.movesSincePromotion = 0;
+      }
     } else {
-      (this.team === Team.White && this.pos.y === gameManager.boardData.boardSize - 1) && this.movesSincePromotion === 0 ? this.rank = PieceRank.Man : '';
-      (this.team === Team.Black && this.pos.y === 0) && this.movesSincePromotion === 0 ? this.rank = PieceRank.Man : '';
+      if (this.rank === PieceRank.King && (this.team === Team.White && this.pos.y === gameManager.boardData.boardSize - 1) && this.movesSincePromotion === 0) {
+        this.rank = PieceRank.Man;
+      }
+      if ((this.rank === PieceRank.King && this.team === Team.Black && this.pos.y === 0) && this.movesSincePromotion === 0) {
+        this.rank = PieceRank.Man;
+      }
     }
-    this.rank === PieceRank.King ? this.movesSincePromotion = 0: '';
     toDraw ? this.draw() : '';
   }
 }
