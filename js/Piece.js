@@ -58,7 +58,7 @@ class Piece {
   }
 
   // A recusive function which returns the piece possible jumps.
-  checkForPossbleJumps(prevMove) {
+  possibleJumps(prevMove) {
     let pos = prevMove ? prevMove.destination : this.pos;
     let possibleJumps = [];
     let potentialJumps = [];
@@ -96,7 +96,7 @@ class Piece {
           this.currentVictims.push(victim);
           let nextMove = new Move(pos, potentialJump[1], victim);
           nextMove.piece = this;
-          nextMove = this.checkForPossbleJumps(nextMove);
+          nextMove = this.possibleJumps(nextMove);
           possibleJumps = possibleJumps.concat(nextMove);
         }
       }
@@ -131,7 +131,7 @@ class Piece {
     toDraw ? this.draw() : '';
   }
 
-  // A function which takes a move object and unmake the move.
+  // A function which takes a move object and unmake the move. # AI Function
   unmakeMove(move, toDraw = true) {
     let rMoves = reverseMoves(move);
     this.movesSincePromotion--;
@@ -155,11 +155,11 @@ class Piece {
   // A function which checks if a piece need to be promoted to a king, and does so if the right conditions met.
   checkForPromotion(isReverse = false, toDraw = true) {
     if (!isReverse) {
-      if ((this.rank === PieceRank.Man && this.team === Team.White && this.pos.y === gameManager.boardData.boardSize - 1) && this.rank === PieceRank.Man) {
+      if ((this.rank === PieceRank.Man && this.team === Team.White && this.pos.y === gameManager.boardData.boardSize - 1)) {
         this.rank = PieceRank.King
         this.movesSincePromotion = 0;
       }
-      if ((this.rank === PieceRank.Man && this.team === Team.Black && this.pos.y === 0) && this.rank === PieceRank.Man) {
+      if ((this.rank === PieceRank.Man && this.team === Team.Black && this.pos.y === 0)) {
         this.rank = PieceRank.King
         this.movesSincePromotion = 0;
       }

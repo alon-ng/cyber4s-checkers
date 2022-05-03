@@ -16,6 +16,7 @@ class GameManager {
   selectSquare(e) {
     let currentPos = squareToPos(e);
     let move;
+
     if (this.prevSquare) {
       this.prevSquare.classList.remove('selected-square');
     }
@@ -38,6 +39,7 @@ class GameManager {
       this.checkForWin();
       this.prevSquare = undefined;
       this.prevPossibleMoves = undefined;
+      setTimeout(aiPlay, 500);
     } else {
       e.classList.add('selected-square');
 
@@ -46,7 +48,7 @@ class GameManager {
 
       if (piece && piece.team === this.turn) {
         if (this.checkForPossibleTeamJumps(piece.team)) {
-          possibleMoves = piece.checkForPossbleJumps();
+          possibleMoves = piece.possibleJumps();
         } else {
           possibleMoves = piece.possibleMoves();
         }
@@ -70,7 +72,6 @@ class GameManager {
       this.prevSquare = e;
       this.prevPossibleMoves = possibleMoves;
     }
-    setTimeout(aiPlay, 500);
   }
 
   // A function which changes the turn and update the indicator if needed.
@@ -90,7 +91,7 @@ class GameManager {
     for (const piece of pieces) {
       let possibleMoves = []
       if (this.checkForPossibleTeamJumps(piece.team)) {
-        possibleMoves = piece.checkForPossbleJumps();
+        possibleMoves = piece.possibleJumps();
       } else {
         possibleMoves = piece.possibleMoves();
       }
@@ -118,7 +119,7 @@ class GameManager {
   checkForPossibleTeamJumps(team) {
     let pieces = this.boardData.getPieces(team);
     for (const piece of pieces) {
-      let posJumps = piece.checkForPossbleJumps();
+      let posJumps = piece.possibleJumps();
       if (posJumps && posJumps.length > 0) {
         return true;
       }

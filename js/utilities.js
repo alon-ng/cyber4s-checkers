@@ -13,7 +13,7 @@ function isPosEqual(pos1, pos2) {
   return pos1.x === pos2.x && pos1.y === pos2.y;
 }
 
-// A function which takes a linked list of moves and reverse it.
+// A function which takes a linked list of moves and reverse it. # AI Function
 function reverseMoves(head) {
   let prev, next;
   let current = head;

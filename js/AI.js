@@ -91,7 +91,7 @@ class AI {
 
     for (const move of moves) {
       if (!this.bestMove) {
-        this.bestMove = deepCopyMove(move);
+        this.bestMove = move;
       }
       move.piece.makeMove(move, false);
       let currentEval = -this.search(depth - 1, deepCopyMove(move), -beta, -alpha);
@@ -104,7 +104,7 @@ class AI {
       }
       if (currentEval > alpha) {
         alpha = currentEval;
-        this.bestMove = deepCopyMove(move);
+        this.bestMove = move;
       }
     }
     if (!this.bestMove) {
@@ -118,7 +118,7 @@ class AI {
     let possibleMoves = [];
     for (let piece of gameManager.boardData.getPieces(gameManager.turn)) {
       if (gameManager.checkForPossibleTeamJumps(gameManager.turn)) {
-        possibleMoves = possibleMoves.concat(piece.checkForPossbleJumps());
+        possibleMoves = possibleMoves.concat(piece.possibleJumps());
       } else {
         possibleMoves = possibleMoves.concat(piece.possibleMoves());
       }

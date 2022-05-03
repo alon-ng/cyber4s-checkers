@@ -51,6 +51,8 @@ class BoardData {
         }
       }
     }
+    // this.createPiece(Team.Black, { x: 2, y: 3 });
+    // this.createPiece(Team.White, { x: 3, y: 2 });
   }
 
   // A function which create a piece object and adds it to BoardData and draws it as well.

@@ -23,6 +23,8 @@ const PieceRank = {
 let gameManager;
 let ai;
 
+// Pos objcet = { x: x, y: y }
+
 window.addEventListener('load', initialize);
 
 // A function which starts the game after the html is loaded.
