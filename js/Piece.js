@@ -62,7 +62,9 @@ class Piece {
     let pos = prevMove ? prevMove.destination : this.pos;
     let possibleJumps = [];
     let potentialJumps = [];
+
     if (this.rank === PieceRank.Man) {
+      // Set potential jump positions for men
       potentialJumps = [
         [{ x: 1 + pos.x, y: this.direction + pos.y }, { x: 2 + pos.x, y: 2 * this.direction + pos.y }],
         [{ x: -1 + pos.x, y: this.direction + pos.y }, { x: -2 + pos.x, y: 2 * this.direction + pos.y }],
@@ -71,7 +73,9 @@ class Piece {
       ];
       potentialJumps = prevMove ? potentialJumps : potentialJumps.slice(0, 2);
     } else if (this.rank === PieceRank.King) {
+      // Set potential jump positions for kings
       let offsets = [ { x: 1, y: 1 }, { x: 1, y: -1 }, { x: -1, y: 1 }, { x: -1, y: -1 }];
+      // Looks for the closest enemy in any direction (if there is one)
       for (const offset of offsets) {
         let checkingPos = { x: pos.x + offset.x, y: pos.y + offset.y};
         for (let i = 1; i < gameManager.boardData.boardSize; i++) {
@@ -88,6 +92,9 @@ class Piece {
       }
     }
 
+    // Checks if any of the potential jumps are valid, and if so it checks weather
+    // the destenation position of the jump has another valid jump (in case of multiple)
+    // jumps
     for (let potentialJump of potentialJumps) {
       let squareStates = [gameManager.boardData.getSquareState(potentialJump[0], this.team), gameManager.boardData.getSquareState(potentialJump[1], this.team)];
       if (squareStates[0] === SquareState.ENEMY && squareStates[1] === SquareState.EMPTY) {
@@ -102,6 +109,7 @@ class Piece {
       }
     }
 
+    // Links the moves to each other.
     for (let i = 0; i < possibleJumps.length && prevMove; i++) {
       let temp = {...prevMove}
       temp.nextMove = possibleJumps[i];
