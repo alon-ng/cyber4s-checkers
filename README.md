@@ -13,5 +13,3 @@ Special Features:
  - When a piece has more than one available move, the player can select the piece again and one move at the time will be shown (keep clicking to shuffle through the moves).
  - When multiple jumping, a yellow square will be drawn in each stopover.
  - An AI can be played against (Work in progress).
-
-Explaining video: https://youtu.be/G6DxmCY8qMg
